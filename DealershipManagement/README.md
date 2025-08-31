@@ -31,7 +31,46 @@ A comprehensive Blazor Server application for managing car dealership operations
 
 ## 🚀 Installation & Setup
 
-### 1. Clone the Repository
+### Option 1: Docker (Recommended)
+
+#### Using Docker Compose (Local Development)
+```bash
+# Clone the repository
+git clone <repository-url>
+cd DealershipManagement
+
+# Start the application with MongoDB
+docker-compose up -d
+
+# The application will be available at:
+# - HTTP:  http://localhost:8080
+# - HTTPS: https://localhost:8081
+```
+
+#### Manual Docker Build
+```bash
+# Build the Docker image
+docker build -t dealership-management .
+
+# Run the container
+docker run -d --name dealership-app -p 8080:8080 -p 8081:8081 \
+  -e MONGODB_CONNECTION_STRING="mongodb://localhost:27017" \
+  dealership-management
+```
+
+#### Using Build Scripts
+```bash
+# Windows PowerShell
+.\build-and-test.ps1
+
+# Linux/macOS
+chmod +x build-and-test.sh
+./build-and-test.sh
+```
+
+### Option 2: Traditional Installation
+
+#### 1. Clone the Repository
 ```bash
 git clone <repository-url>
 cd DealershipManagement
@@ -359,7 +398,38 @@ For support and questions:
 - Review the code examples in the Models and Services folders
 - Ensure all prerequisites are met
 
+## 🚀 Deployment
+
+### Render.com Deployment
+This application is ready for deployment on Render.com using Docker. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+
+#### Quick Deploy Steps:
+1. Push your code to Git repository
+2. Connect to Render.com
+3. Create new Web Service with Docker environment
+4. Set environment variables (especially `MONGODB_CONNECTION_STRING`)
+5. Deploy!
+
+#### Required Environment Variables for Production:
+- `MONGODB_CONNECTION_STRING`: Your MongoDB connection string
+- `ASPNETCORE_ENVIRONMENT`: Production
+- `ASPNETCORE_URLS`: http://+:8080
+
+### Docker Support
+- **Multi-stage Dockerfile** optimized for production
+- **Docker Compose** for local development
+- **Health check endpoint** at `/health`
+- **Non-root user** for security
+- **Automatic file directory creation**
+
 ## 🔄 Version History
+
+- **v1.1.0**: Docker and Deployment Support
+  - Docker containerization
+  - Render.com deployment configuration
+  - Health check endpoint
+  - Environment variable configuration
+  - Production-ready Docker setup
 
 - **v1.0.0**: Initial release with core functionality
   - Car management system

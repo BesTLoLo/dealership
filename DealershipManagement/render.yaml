@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: dealership-management
+    env: docker
+    plan: starter
+    region: oregon
+    buildCommand: docker build -t dealership-management .
+    startCommand: docker run -p $PORT:8080 dealership-management
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:8080
+      - key: MONGODB_CONNECTION_STRING
+        sync: false
+      - key: MONGODB_DATABASE_NAME
+        value: DealershipDB
+      - key: MONGODB_CARS_COLLECTION
+        value: Cars
+      - key: MONGODB_INVOICES_COLLECTION
+        value: Invoices
+    healthCheckPath: /health
+    autoDeploy: true
+    branch: main

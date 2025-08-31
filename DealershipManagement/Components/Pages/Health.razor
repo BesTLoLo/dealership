@@ -1,0 +1,45 @@
+@page "/health"
+@inject MongoDbContext MongoDbContext
+@inject ILogger<Health> Logger
+
+@code {
+    private bool isHealthy = true;
+    private string status = "Healthy";
+    private string details = "Application is running normally";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Test MongoDB connection
+            var database = MongoDbContext.Database;
+            await database.RunCommandAsync((Command<BsonDocument>)"{ping:1}");
+            
+            isHealthy = true;
+            status = "Healthy";
+            details = "Application and database are running normally";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Health check failed");
+            isHealthy = false;
+            status = "Unhealthy";
+            details = $"Database connection failed: {ex.Message}";
+        }
+    }
+}
+
+@if (isHealthy)
+{
+    <div class="alert alert-success">
+        <h4>✅ @status</h4>
+        <p>@details</p>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">
+        <h4>❌ @status</h4>
+        <p>@details</p>
+    </div>
+}

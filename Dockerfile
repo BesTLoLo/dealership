@@ -13,12 +13,12 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy project files
-COPY ["dealership/DealershipManagement.csproj", "./"]
+COPY ["DealershipManagement/DealershipManagement.csproj", "./"]
 RUN dotnet restore "DealershipManagement.csproj"
 
 # Copy source code
 COPY . .
-WORKDIR "/src/dealership"
+WORKDIR "/src/DealershipManagement"
 
 # Build the application
 RUN dotnet build "DealershipManagement.csproj" -c Release -o /app/build

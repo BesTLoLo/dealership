@@ -3,6 +3,23 @@ using DealershipManagement.Data;
 using DealershipManagement.Repositories;
 using DealershipManagement.Services;
 
+// Load environment variables from .env file
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (File.Exists(envPath))
+{
+    foreach (var line in File.ReadAllLines(envPath))
+    {
+        if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+        {
+            var parts = line.Split('=', 2);
+            if (parts.Length == 2)
+            {
+                Environment.SetEnvironmentVariable(parts[0].Trim(), parts[1].Trim());
+            }
+        }
+    }
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

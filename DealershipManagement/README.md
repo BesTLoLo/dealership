@@ -43,7 +43,30 @@ dotnet restore
 ```
 
 ### 3. Configure MongoDB
-Update the `appsettings.json` file with your MongoDB connection details:
+
+#### Option 1: Environment Variables (Recommended)
+Create a `.env` file in the project root with your MongoDB configuration:
+
+```bash
+# Copy env.example to .env and update values
+cp env.example .env
+```
+
+Then edit the `.env` file:
+```bash
+# MongoDB Connection String
+MONGODB_CONNECTION_STRING=mongodb://localhost:27017
+
+# Database Name
+MONGODB_DATABASE_NAME=DealershipDB
+
+# Collection Names (optional - these have defaults)
+MONGODB_CARS_COLLECTION=Cars
+MONGODB_INVOICES_COLLECTION=Invoices
+```
+
+#### Option 2: Direct Configuration
+Alternatively, update the `appsettings.json` file with your MongoDB connection details:
 
 ```json
 {
@@ -55,6 +78,8 @@ Update the `appsettings.json` file with your MongoDB connection details:
   }
 }
 ```
+
+**Note**: Environment variables take precedence over appsettings.json values.
 
 ### 4. Run the Application
 ```bash
@@ -142,6 +167,29 @@ The application will be available at `https://localhost:5001` or `http://localho
 5. Car status updates to "Sold"
 
 ## ⚙️ Configuration
+
+### Environment Variables
+The application supports configuration through environment variables for enhanced security and flexibility:
+
+- **MONGODB_CONNECTION_STRING**: MongoDB connection string (default: mongodb://localhost:27017)
+- **MONGODB_DATABASE_NAME**: Database name (default: DealershipDB)
+- **MONGODB_CARS_COLLECTION**: Cars collection name (default: Cars)
+- **MONGODB_INVOICES_COLLECTION**: Invoices collection name (default: Invoices)
+
+#### Using .env File
+1. Copy `env.example` to `.env`
+2. Update the values in `.env`
+3. The application automatically loads these environment variables
+
+#### Using System Environment Variables
+You can also set these variables at the system level:
+```bash
+# Windows (PowerShell)
+$env:MONGODB_CONNECTION_STRING="mongodb://your-server:27017"
+
+# Linux/macOS
+export MONGODB_CONNECTION_STRING="mongodb://your-server:27017"
+```
 
 ### File Upload Settings
 - **Maximum file size**: 10MB

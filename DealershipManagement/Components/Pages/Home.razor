@@ -1,0 +1,109 @@
+﻿@page "/"
+
+<PageTitle>Home - Dealership Management</PageTitle>
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Dealership Management System</h1>
+            <p class="lead">Manage your car inventory, track maintenance, and monitor sales with ease.</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <span class="oi oi-list" style="font-size: 3rem; color: var(--bs-primary);"></span>
+                    </div>
+                    <h5 class="card-title">Car Management</h5>
+                    <p class="card-text">Add, edit, and manage your car inventory. Track purchase and sale details with automatic tax calculations.</p>
+                    <a href="/cars" class="btn btn-primary">Manage Cars</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <span class="oi oi-magnifying-glass" style="font-size: 3rem; color: var(--bs-success);"></span>
+                    </div>
+                    <h5 class="card-title">Search & Filter</h5>
+                    <p class="card-text">Find cars quickly using VIN, stock number, make, model, or year. Apply advanced filters for precise results.</p>
+                    <a href="/search" class="btn btn-success">Search Cars</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <span class="oi oi-wrench" style="font-size: 3rem; color: var(--bs-warning);"></span>
+                    </div>
+                    <h5 class="card-title">Maintenance Tracking</h5>
+                    <p class="card-text">Keep detailed maintenance logs with invoice attachments. Track parts, costs, and service history.</p>
+                    <a href="/cars" class="btn btn-warning">View Cars</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">System Features</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <span class="oi oi-check text-success me-2"></span>
+                            <strong>Inventory Management:</strong> Track cars from purchase to sale
+                        </li>
+                        <li class="list-group-item">
+                            <span class="oi oi-check text-success me-2"></span>
+                            <strong>Automatic Calculations:</strong> Tax and final price computations
+                        </li>
+                        <li class="list-group-item">
+                            <span class="oi oi-check text-success me-2"></span>
+                            <strong>Maintenance Logs:</strong> Detailed service history with file attachments
+                        </li>
+                        <li class="list-group-item">
+                            <span class="oi oi-check text-success me-2"></span>
+                            <strong>Advanced Search:</strong> Find cars using multiple criteria
+                        </li>
+                        <li class="list-group-item">
+                            <span class="oi oi-check text-success me-2"></span>
+                            <strong>File Management:</strong> Store and retrieve invoice documents
+                        </li>
+                        <li class="list-group-item">
+                            <span class="oi oi-check text-success me-2"></span>
+                            <strong>MongoDB Backend:</strong> Scalable and flexible data storage
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/cars" class="btn btn-primary mb-2">
+                            <span class="oi oi-list me-2"></span>View All Cars
+                        </a>
+                        <a href="/cars" class="btn btn-success mb-2">
+                            <span class="oi oi-plus me-2"></span>Add New Car
+                        </a>
+                        <a href="/search" class="btn btn-info">
+                            <span class="oi oi-magnifying-glass me-2"></span>Search Cars
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

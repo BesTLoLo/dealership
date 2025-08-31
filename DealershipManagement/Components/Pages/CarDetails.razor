@@ -1,0 +1,269 @@
+@page "/car/{Id}"
+
+
+<PageTitle>Car Details - Dealership Management</PageTitle>
+
+@if (car == null)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/cars">Cars</a></li>
+                        <li class="breadcrumb-item active">@car.Year @car.Make @car.Model</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col text-end">
+                <div class="btn-group" role="group">
+                    <a href="/car/@car.Id/edit" class="btn btn-outline-secondary">
+                        <span class="oi oi-pencil"></span> Edit
+                    </a>
+                    @if (!car.IsSold)
+                    {
+                        <a href="/car/@car.Id/sell" class="btn btn-outline-success">
+                            <span class="oi oi-dollar"></span> Sell
+                        </a>
+                    }
+                    <button class="btn btn-outline-danger" @onclick="DeleteCar">
+                        <span class="oi oi-trash"></span> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Car Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">VIN:</dt>
+                                    <dd class="col-sm-8">@car.VIN</dd>
+                                    
+                                    <dt class="col-sm-4">Stock #:</dt>
+                                    <dd class="col-sm-8">@car.StockNumber</dd>
+                                    
+                                    <dt class="col-sm-4">Make:</dt>
+                                    <dd class="col-sm-8">@car.Make</dd>
+                                    
+                                    <dt class="col-sm-4">Model:</dt>
+                                    <dd class="col-sm-8">@car.Model</dd>
+                                    
+                                    <dt class="col-sm-4">Year:</dt>
+                                    <dd class="col-sm-8">@car.Year</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">Status:</dt>
+                                    <dd class="col-sm-8">
+                                        <span class="badge @(car.IsSold ? "bg-success" : "bg-primary")">
+                                            @car.Status
+                                        </span>
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4">Buy Price:</dt>
+                                    <dd class="col-sm-8">@car.BuyPrice.ToString("C")</dd>
+                                    
+                                    <dt class="col-sm-4">Tax:</dt>
+                                    <dd class="col-sm-8">@car.Tax.ToString("C")</dd>
+                                    
+                                    <dt class="col-sm-4">Final Buy Price:</dt>
+                                    <dd class="col-sm-8">@car.FinalBuyPrice.ToString("C")</dd>
+                                    
+                                    <dt class="col-sm-4">Buy Date:</dt>
+                                    <dd class="col-sm-8">@(car.BuyDate?.ToString("MMM dd, yyyy") ?? "Not set")</dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        @if (car.IsSold)
+                        {
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Sell Price:</dt>
+                                        <dd class="col-sm-8">@car.SellPrice.ToString("C")</dd>
+                                        
+                                        <dt class="col-sm-4">Final Sell Price:</dt>
+                                        <dd class="col-sm-8">@car.FinalSellPrice.ToString("C")</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Sell Date:</dt>
+                                        <dd class="col-sm-8">@car.SellDate?.ToString("MMM dd, yyyy")</dd>
+                                        
+                                        <dt class="col-sm-4">Profit:</dt>
+                                        <dd class="col-sm-8 @(car.FinalSellPrice > car.FinalBuyPrice ? "text-success" : "text-danger")">
+                                            @((car.FinalSellPrice - car.FinalBuyPrice).ToString("C"))
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4>Maintenance Logs</h4>
+                        @if (!car.IsSold)
+                        {
+                            <button class="btn btn-primary btn-sm" @onclick="ShowAddMaintenanceModal">
+                                <span class="oi oi-plus"></span> Add Log
+                            </button>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (!car.MaintenanceLogs.Any())
+                        {
+                            <p class="text-muted text-center">No maintenance logs found</p>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Part #</th>
+                                            <th>Description</th>
+                                            <th>Price</th>
+                                            <th>Final Price</th>
+                                            <th>Invoice</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var log in car.MaintenanceLogs.OrderByDescending(l => l.Date))
+                                        {
+                                            <tr>
+                                                <td>@log.Date.ToString("MMM dd, yyyy")</td>
+                                                <td>@log.PartNumber</td>
+                                                <td>@log.PartDescription</td>
+                                                <td>@log.Price.ToString("C")</td>
+                                                <td>@log.FinalPrice.ToString("C")</td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(log.InvoiceFilePath))
+                                                    {
+                                                        <button class="btn btn-sm btn-outline-info" @onclick="() => DownloadInvoice(log.InvoiceFilePath)">
+                                                            <span class="oi oi-document"></span> Download
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">No invoice</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (!car.IsSold)
+                                                    {
+                                                        <div class="btn-group" role="group">
+                                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => EditMaintenanceLog(log)">
+                                                                <span class="oi oi-pencil"></span>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteMaintenanceLog(log.Id)">
+                                                                <span class="oi oi-trash"></span>
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/cars" class="btn btn-outline-primary">
+                                <span class="oi oi-list"></span> Back to Cars
+                            </a>
+                            <a href="/search" class="btn btn-outline-secondary">
+                                <span class="oi oi-magnifying-glass"></span> Search Cars
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (showAddMaintenanceModal)
+{
+    <div class="modal fade show" style="display: block;" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Maintenance Log</h5>
+                    <button type="button" class="btn-close" @onclick="CloseAddMaintenanceModal"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="newMaintenanceLog" OnValidSubmit="HandleAddMaintenanceSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="partNumber" class="form-label">Part Number *</label>
+                                <InputText id="partNumber" class="form-control" @bind-Value="newMaintenanceLog.PartNumber" />
+                                <ValidationMessage For="@(() => newMaintenanceLog.PartNumber)" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="partDescription" class="form-label">Description *</label>
+                                <InputText id="partDescription" class="form-control" @bind-Value="newMaintenanceLog.PartDescription" />
+                                <ValidationMessage For="@(() => newMaintenanceLog.PartDescription)" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label">Price *</label>
+                                <InputNumber id="price" class="form-control" @bind-Value="newMaintenanceLog.Price" />
+                                <ValidationMessage For="@(() => newMaintenanceLog.Price)" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="date" class="form-label">Date *</label>
+                                <InputDate id="date" class="form-control" @bind-Value="newMaintenanceLog.Date" />
+                                <ValidationMessage For="@(() => newMaintenanceLog.Date)" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="invoiceFile" class="form-label">Invoice File</label>
+                            <InputFile id="invoiceFile" class="form-control" OnChange="HandleInvoiceFileChange" />
+                            <small class="form-text text-muted">Max file size: @(FileService.GetMaxFileSize() / (1024 * 1024))MB</small>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CloseAddMaintenanceModal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add Log</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}

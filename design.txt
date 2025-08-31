@@ -1,0 +1,141 @@
+Dealership Management System – Design Document
+Overview
+
+We are building a Dealership Management Website using Blazor Server and MongoDB.
+The system manages cars, their purchase/sale details, and maintenance logs (with invoice attachments). It must also allow searching cars by VIN, stock number, make, model, or year.
+
+Architecture
+Layers
+
+Presentation (Blazor Server UI)
+
+Components for Car List, Car Details, Maintenance Logs, Search
+
+Handles forms, validation, and file uploads
+
+Application Layer (Services)
+
+CarService → Add/Edit/Delete cars, compute final prices
+
+MaintenanceService → Add/Edit/Delete maintenance logs, handle invoice uploads
+
+SearchService → Unified search by VIN/Stock#/Make/Model/Year
+
+Data Access Layer
+
+Repository classes for MongoDB
+
+Uses collections: Cars, Invoices
+
+Storage
+
+MongoDB for all structured data
+
+File storage for invoices (or Mongo GridFS if preferred)
+
+Data Model
+Car Collection
+{
+  "_id": "ObjectId",
+  "VIN": "string",
+  "Make": "string",
+  "Model": "string",
+  "Year": 2021,
+  "StockNumber": "string",
+
+  "BuyPrice": 12000.0,
+  "BuyDate": "2024-08-01T00:00:00Z",
+  "SellPrice": 15000.0,
+  "SellDate": "2024-09-10T00:00:00Z",
+
+  "Tax": 1500.0,
+  "FinalSellPrice": 16500.0,
+  "FinalBuyPrice": 13500.0,
+
+  "MaintenanceLogs": [
+    {
+      "Id": "uuid",
+      "PartNumber": "12345",
+      "PartDescription": "Brake Pads",
+      "Price": 200.0,
+      "FinalPrice": 220.0,
+      "Date": "2024-08-15T00:00:00Z",
+      "InvoiceFilePath": "/invoices/brakepads123.pdf"
+    }
+  ]
+}
+
+MaintenanceLog (Embedded)
+
+Id: unique log id
+
+PartNumber: part identifier
+
+PartDescription: description of the part/service
+
+Price: base price
+
+FinalPrice: price after tax/discount
+
+Date: maintenance date
+
+InvoiceFilePath: reference to uploaded invoice file
+
+Features
+Car Management
+
+Add new car with VIN, make, model, year, stock#, buy price/date
+
+Edit car details
+
+Sell car (enter sell date, price → system computes final sell price with tax)
+
+Delete car
+
+Maintenance Logs
+
+Add new log (part#, desc, price, date, invoice file)
+
+Edit/Delete logs
+
+View all logs per car
+
+Search
+
+Search by VIN, stock#, make, model, year
+
+Filters: available cars (not sold), sold cars, date ranges
+
+UI/UX Pages
+
+Cars Page
+
+Paginated list of cars
+
+Quick actions (View, Edit, Delete)
+
+Car Details Page
+
+Car info section (purchase/sale details)
+
+Maintenance logs (table) with add/edit/delete
+
+File upload for invoices
+
+Search Page
+
+Unified search bar
+
+Filter panel (status, date ranges)
+
+Non-Functional Requirements
+
+Authentication → Role-based (Admin, Sales, Service)
+
+File Upload → Store invoices in server file system or GridFS
+
+Audit Logging → Track changes to car data
+
+Backups → DB and file storage backups
+
+Scalability → Optimize MongoDB queries, indexes on VIN, StockNumber

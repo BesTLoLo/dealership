@@ -12,13 +12,31 @@
 
     <div class="row mb-4">
         <div class="col-md-8">
-            <div class="input-group">
+            <div class="input-group position-relative">
                 <InputText class="form-control" Placeholder="Search by VIN, Stock #, Make, Model, or Year..." 
-                           @bind-Value="searchFilters.SearchTerm" @onkeyup="HandleSearch" />
+                           @bind-Value="searchFilters.SearchTerm" @onkeyup="HandleSearch" 
+                           @oninput="OnSearchTermChanged" />
                 <button class="btn btn-primary" @onclick="PerformSearch">
                     <span class="oi oi-magnifying-glass"></span> Search
                 </button>
+                
+                <!-- Search Suggestions Dropdown -->
+                @if (showSuggestions && searchSuggestions.Any())
+                {
+                    <div class="position-absolute w-100 bg-white border rounded shadow-sm" style="top: 100%; z-index: 1000; max-height: 200px; overflow-y: auto;">
+                        @foreach (var suggestion in searchSuggestions)
+                        {
+                            <div class="suggestion-item p-2 border-bottom cursor-pointer" 
+                                 @onclick="() => SelectSuggestion(suggestion)"
+                                 @onmouseover="() => OnSuggestionHover(suggestion)"
+                                 style="cursor: pointer;">
+                                <small class="text-muted">@suggestion</small>
+                            </div>
+                        }
+                    </div>
+                }
             </div>
+            <small class="text-muted">Type to search. Press Enter to search or Escape to close suggestions.</small>
         </div>
         <div class="col-md-4">
             <button class="btn btn-outline-secondary" @onclick="ShowAdvancedFilters">
@@ -84,12 +102,19 @@
             <p>Enter search criteria above to find cars</p>
         </div>
     }
-    else if (searchResults == null)
+    else if (isSearching)
     {
         <div class="text-center">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Searching...</span>
             </div>
+            <p class="mt-2 text-muted">Searching for cars...</p>
+        </div>
+    }
+    else if (searchResults == null)
+    {
+        <div class="text-center text-muted">
+            <p>No cars found matching your search criteria</p>
         </div>
     }
     else if (!searchResults.Any())
@@ -171,3 +196,13 @@
         }
     }
 </div>
+
+<style>
+    .suggestion-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .suggestion-item:last-child {
+        border-bottom: none !important;
+    }
+</style>

@@ -13,5 +13,6 @@ namespace DealershipManagement.Repositories
         Task<bool> UpdateAsync(Car car);
         Task<bool> DeleteAsync(string id);
         Task<long> GetCountAsync(SearchFilters? filters = null);
+        Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm);
     }
 }

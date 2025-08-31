@@ -97,5 +97,10 @@ namespace DealershipManagement.Services
         {
             return await _carRepository.GetCountAsync(filters);
         }
+
+        public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm)
+        {
+            return await _carRepository.GetSearchSuggestionsAsync(searchTerm);
+        }
     }
 }

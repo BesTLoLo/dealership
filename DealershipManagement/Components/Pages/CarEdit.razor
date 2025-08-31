@@ -1,0 +1,144 @@
+@page "/car/{Id}/edit"
+
+<PageTitle>Edit Car - Dealership Management</PageTitle>
+
+@if (car == null)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/cars">Cars</a></li>
+                        <li class="breadcrumb-item"><a href="/car/@car.Id">@car.Year @car.Make @car.Model</a></li>
+                        <li class="breadcrumb-item active">Edit</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Edit Car: @car.Year @car.Make @car.Model</h4>
+                    </div>
+                    <div class="card-body">
+                        <EditForm Model="car" OnValidSubmit="HandleSubmit">
+                            <DataAnnotationsValidator />
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="vin" class="form-label">VIN *</label>
+                                    <InputText id="vin" class="form-control" @bind-Value="car.VIN" />
+                                    <ValidationMessage For="@(() => car.VIN)" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="stockNumber" class="form-label">Stock Number *</label>
+                                    <InputText id="stockNumber" class="form-control" @bind-Value="car.StockNumber" />
+                                    <ValidationMessage For="@(() => car.StockNumber)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="make" class="form-label">Make *</label>
+                                    <InputText id="make" class="form-control" @bind-Value="car.Make" />
+                                    <ValidationMessage For="@(() => car.Make)" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="model" class="form-label">Model *</label>
+                                    <InputText id="model" class="form-control" @bind-Value="car.Model" />
+                                    <ValidationMessage For="@(() => car.Model)" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="year" class="form-label">Year *</label>
+                                    <InputNumber id="year" class="form-control" @bind-Value="car.Year" />
+                                    <ValidationMessage For="@(() => car.Year)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="buyPrice" class="form-label">Buy Price</label>
+                                    <InputNumber id="buyPrice" class="form-control" @bind-Value="car.BuyPrice" />
+                                    <ValidationMessage For="@(() => car.BuyPrice)" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="buyDate" class="form-label">Buy Date</label>
+                                    <InputDate id="buyDate" class="form-control" @bind-Value="car.BuyDate" />
+                                    <ValidationMessage For="@(() => car.BuyDate)" />
+                                </div>
+                            </div>
+
+                            @if (car.IsSold)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sellPrice" class="form-label">Sell Price</label>
+                                        <InputNumber id="sellPrice" class="form-control" @bind-Value="car.SellPrice" />
+                                        <ValidationMessage For="@(() => car.SellPrice)" />
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sellDate" class="form-label">Sell Date</label>
+                                        <InputDate id="sellDate" class="form-control" @bind-Value="car.SellDate" />
+                                        <ValidationMessage For="@(() => car.SellDate)" />
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                                    @if (isSubmitting)
+                                    {
+                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    }
+                                    Save Changes
+                                </button>
+                                <a href="/car/@car.Id" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Car Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-6">Status:</dt>
+                            <dd class="col-sm-6">
+                                <span class="badge @(car.IsSold ? "bg-success" : "bg-primary")">
+                                    @car.Status
+                                </span>
+                            </dd>
+                            
+                            <dt class="col-sm-6">Tax:</dt>
+                            <dd class="col-sm-6">@car.Tax.ToString("C")</dd>
+                            
+                            <dt class="col-sm-6">Final Buy Price:</dt>
+                            <dd class="col-sm-6">@car.FinalBuyPrice.ToString("C")</dd>
+                            
+                            @if (car.IsSold)
+                            {
+                                <dt class="col-sm-6">Final Sell Price:</dt>
+                                <dd class="col-sm-6">@car.FinalSellPrice.ToString("C")</dd>
+                            }
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

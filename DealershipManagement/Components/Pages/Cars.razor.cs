@@ -129,5 +129,71 @@ namespace DealershipManagement.Components.Pages
                 });
             }
         }
+
+        private async Task<GridDataProviderResult<Car>> CarsDataProvider(GridDataProviderRequest<Car> request)
+        {
+            string sortString = "";
+            SortDirection sortDirection = SortDirection.None;
+
+            if (request.Sorting is not null && request.Sorting.Any())
+            {
+                // Note: Multi column sorting is not supported at this moment
+                sortString = request.Sorting.FirstOrDefault()!.SortString;
+                sortDirection = request.Sorting.FirstOrDefault()!.SortDirection;
+            }
+
+            // For now, we'll use the existing cars list and apply basic filtering/sorting
+            // In a real application, you'd want to implement proper database-level filtering and pagination
+            var filteredCars = cars ?? new List<Car>();
+
+            // Apply filters if any
+            if (request.Filters is not null && request.Filters.Any())
+            {
+                foreach (var filter in request.Filters)
+                {
+                    if (!string.IsNullOrEmpty(filter.Value))
+                    {
+                        filteredCars = filteredCars.Where(car =>
+                        {
+                            var propertyValue = GetPropertyValue(car, filter.PropertyName);
+                            return propertyValue?.ToString()?.Contains(filter.Value, StringComparison.OrdinalIgnoreCase) == true;
+                        }).ToList();
+                    }
+                }
+            }
+
+            // Apply sorting
+            if (!string.IsNullOrEmpty(sortString))
+            {
+                filteredCars = sortDirection == SortDirection.Ascending
+                    ? filteredCars.OrderBy(car => GetPropertyValue(car, sortString)).ToList()
+                    : filteredCars.OrderByDescending(car => GetPropertyValue(car, sortString)).ToList();
+            }
+
+            // Apply pagination
+            var totalCount = filteredCars.Count;
+            var pagedCars = filteredCars
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToList();
+
+            return await Task.FromResult(new GridDataProviderResult<Car> { Data = pagedCars, TotalCount = totalCount });
+        }
+
+        private object? GetPropertyValue(Car car, string propertyName)
+        {
+            return propertyName switch
+            {
+                "VIN" => car.VIN,
+                "StockNumber" => car.StockNumber,
+                "Make" => car.Make,
+                "Model" => car.Model,
+                "Year" => car.Year,
+                "Status" => car.Status,
+                "FinalBuyPrice" => car.FinalBuyPrice,
+                "FinalSellPrice" => car.FinalSellPrice,
+                _ => null
+            };
+        }
     }
 }

@@ -73,6 +73,70 @@ namespace DealershipManagement.Repositories
             return await _carsCollection.CountDocumentsAsync(filter);
         }
 
+        public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm) || searchTerm.Length < 2)
+                return Enumerable.Empty<string>();
+
+            var suggestions = new List<string>();
+            var searchRegex = new BsonRegularExpression(searchTerm, "i");
+
+            try
+            {
+                // Get suggestions from VIN, Stock Number, Make, and Model
+                var pipeline = new[]
+                {
+                    new BsonDocument("$match", new BsonDocument
+                    {
+                        { "$or", new BsonArray
+                            {
+                                new BsonDocument("VIN", searchRegex),
+                                new BsonDocument("StockNumber", searchRegex),
+                                new BsonDocument("Make", searchRegex),
+                                new BsonDocument("Model", searchRegex)
+                            }
+                        }
+                    }),
+                    new BsonDocument("$project", new BsonDocument
+                    {
+                        { "VIN", 1 },
+                        { "StockNumber", 1 },
+                        { "Make", 1 },
+                        { "Model", 1 }
+                    }),
+                    new BsonDocument("$limit", 20)
+                };
+
+                var results = await _carsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                foreach (var result in results)
+                {
+                    if (result.Contains("VIN") && result["VIN"].AsString.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                        suggestions.Add(result["VIN"].AsString);
+                    
+                    if (result.Contains("StockNumber") && result["StockNumber"].AsString.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                        suggestions.Add(result["StockNumber"].AsString);
+                    
+                    if (result.Contains("Make") && result["Make"].AsString.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                        suggestions.Add(result["Make"].AsString);
+                    
+                    if (result.Contains("Model") && result["Model"].AsString.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                        suggestions.Add(result["Model"].AsString);
+                }
+
+                // Remove duplicates and return top suggestions
+                return suggestions.Distinct(StringComparer.OrdinalIgnoreCase)
+                                .OrderBy(s => s.Length) // Prefer shorter matches
+                                .ThenBy(s => s.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase)) // Prefer matches at the beginning
+                                .Take(10);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting search suggestions: {ex.Message}");
+                return Enumerable.Empty<string>();
+            }
+        }
+
         private FilterDefinition<Car> BuildFilter(SearchFilters filters)
         {
             var builder = Builders<Car>.Filter;

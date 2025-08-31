@@ -40,6 +40,7 @@ namespace DealershipManagement.Services
                         {
                             PartNumber = "BP001",
                             PartDescription = "Brake Pads",
+                            ShopName = "AutoZone",
                             Price = 150.00m,
                             Date = DateTime.Today.AddDays(-15),
                             InvoiceFilePath = ""
@@ -48,6 +49,7 @@ namespace DealershipManagement.Services
                         {
                             PartNumber = "OF001",
                             PartDescription = "Oil Filter Change",
+                            ShopName = "Jiffy Lube",
                             Price = 45.00m,
                             Date = DateTime.Today.AddDays(-10),
                             InvoiceFilePath = ""
@@ -71,6 +73,7 @@ namespace DealershipManagement.Services
                         {
                             PartNumber = "TS001",
                             PartDescription = "Tire Set",
+                            ShopName = "Discount Tire",
                             Price = 400.00m,
                             Date = DateTime.Today.AddDays(-20),
                             InvoiceFilePath = ""
@@ -92,6 +95,7 @@ namespace DealershipManagement.Services
                         {
                             PartNumber = "AC001",
                             PartDescription = "Air Filter",
+                            ShopName = "O'Reilly Auto Parts",
                             Price = 35.00m,
                             Date = DateTime.Today.AddDays(-5),
                             InvoiceFilePath = ""

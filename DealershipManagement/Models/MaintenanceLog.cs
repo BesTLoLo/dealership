@@ -17,6 +17,10 @@ namespace DealershipManagement.Models
         public string PartDescription { get; set; } = string.Empty;
 
         [Required]
+        [BsonElement("ShopName")]
+        public string ShopName { get; set; } = string.Empty;
+
+        [Required]
         [BsonElement("Price")]
         public decimal Price { get; set; }
 

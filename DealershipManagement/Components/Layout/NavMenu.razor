@@ -1,39 +1,37 @@
 ﻿@inject NavigationManager NavigationManager
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" id="navbar-toggler">
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
         <a class="navbar-brand" href="">Dealership Management</a>
-        <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
+        <label for="navbar-toggler" class="navbar-toggler-label">
             <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse @(collapseNavMenu ? "collapse" : "")" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link @(NavigationManager.Uri == NavigationManager.BaseUri ? "active" : "")" href="">
-                        <span class="oi oi-home me-2"></span> Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(NavigationManager.Uri.Contains("/cars") ? "active" : "")" href="cars">
-                        <span class="oi oi-list me-2"></span> Cars
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(NavigationManager.Uri.Contains("/search") ? "active" : "")" href="search">
-                        <span class="oi oi-magnifying-glass me-2"></span> Search
-                    </a>
-                </li>
-            </ul>
-        </div>
+        </label>
     </div>
-</nav>
+</div>
+
+<div class="nav-scrollable">
+    <nav class="flex-column">
+        <div class="nav-item flex-column" style="width:100%;">
+            <a class="nav-link @(NavigationManager.Uri == NavigationManager.BaseUri ? "active" : "")" href="">
+                <span class="bi bi-house-door-fill-nav-menu"></span> Home
+            </a>
+        </div>
+        <div class="nav-item flex-column" style="width:100%;">
+            <a class="nav-link @(NavigationManager.Uri.Contains("/cars") ? "active" : "")" href="cars">
+                <span class="bi bi-list-nested-nav-menu"></span> Cars
+            </a>
+        </div>
+        <div class="nav-item flex-column" style="width:100%;">
+            <a class="nav-link @(NavigationManager.Uri.Contains("/search") ? "active" : "")" href="search">
+                <span class="bi bi-search-nav-menu"></span> Search
+            </a>
+        </div>
+    </nav>
+</div>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    // No JavaScript toggle needed - CSS handles the collapse/expand
 }
 

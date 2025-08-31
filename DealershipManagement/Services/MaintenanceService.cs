@@ -6,7 +6,7 @@ namespace DealershipManagement.Services
     public class MaintenanceService : IMaintenanceService
     {
         private readonly ICarRepository _carRepository;
-        private const decimal TAX_RATE = 0.10m; // 10% tax rate
+        private const decimal TAX_RATE = 0.13m; // 13% tax rate
 
         public MaintenanceService(ICarRepository carRepository)
         {

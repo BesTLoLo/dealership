@@ -30,6 +30,24 @@ namespace DealershipManagement.Components.Pages
         private bool showAddMaintenanceModal = false;
         private MaintenanceLog newMaintenanceLog = new();
         private IBrowserFile? selectedInvoiceFile;
+        private List<string> shopNames = new()
+        {
+            "AutoZone",
+            "O'Reilly Auto Parts",
+            "Advance Auto Parts",
+            "NAPA Auto Parts",
+            "Jiffy Lube",
+            "Valvoline",
+            "Discount Tire",
+            "Firestone",
+            "Goodyear",
+            "Midas",
+            "Meineke",
+            "Pep Boys",
+            "Walmart Auto Center",
+            "Sears Auto Center",
+            "Other"
+        };
 
         protected override async Task OnInitializedAsync()
         {
@@ -66,7 +84,7 @@ namespace DealershipManagement.Components.Pages
 
         private void ShowAddMaintenanceModal()
         {
-            newMaintenanceLog = new MaintenanceLog { Date = DateTime.Today };
+            newMaintenanceLog = new MaintenanceLog { Date = DateTime.Today, ShopName = "" };
             showAddMaintenanceModal = true;
         }
 

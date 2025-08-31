@@ -14,5 +14,6 @@ namespace DealershipManagement.Services
         Task<Car?> GetCarByStockNumberAsync(string stockNumber);
         Task<IEnumerable<Car>> SearchCarsAsync(SearchFilters filters);
         Task<long> GetCarsCountAsync(SearchFilters? filters = null);
+        Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm);
     }
 }

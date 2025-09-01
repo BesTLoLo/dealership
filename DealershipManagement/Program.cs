@@ -3,23 +3,6 @@ using DealershipManagement.Data;
 using DealershipManagement.Repositories;
 using DealershipManagement.Services;
 
-// Load environment variables from .env file
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
-if (File.Exists(envPath))
-{
-    foreach (var line in File.ReadAllLines(envPath))
-    {
-        if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
-        {
-            var parts = line.Split('=', 2);
-            if (parts.Length == 2)
-            {
-                Environment.SetEnvironmentVariable(parts[0].Trim(), parts[1].Trim());
-            }
-        }
-    }
-}
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -29,10 +12,30 @@ builder.Services.AddRazorComponents()
 // Add Blazor.Bootstrap services
 builder.Services.AddBlazorBootstrap();
 
+// Configure MongoDB with environment variables from Render
+var mongoDbSettings = new MongoDbSettings
+{
+    ConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING") ?? 
+                      builder.Configuration.GetConnectionString("MongoDb") ?? 
+                      "mongodb://localhost:27017",
+    DatabaseName = Environment.GetEnvironmentVariable("MONGODB_DATABASE_NAME") ?? 
+                   builder.Configuration["MongoDb:DatabaseName"] ?? 
+                   "DealershipDB",
+    CarsCollectionName = Environment.GetEnvironmentVariable("MONGODB_CARS_COLLECTION") ?? 
+                         builder.Configuration["MongoDb:CarsCollectionName"] ?? 
+                         "Cars",
+    InvoicesCollectionName = Environment.GetEnvironmentVariable("MONGODB_INVOICES_COLLECTION") ?? 
+                             builder.Configuration["MongoDb:InvoicesCollectionName"] ?? 
+                             "Invoices"
+};
 
-// Configure MongoDB
-builder.Services.Configure<MongoDbSettings>(
-    builder.Configuration.GetSection("MongoDb"));
+builder.Services.Configure<MongoDbSettings>(options =>
+{
+    options.ConnectionString = mongoDbSettings.ConnectionString;
+    options.DatabaseName = mongoDbSettings.DatabaseName;
+    options.CarsCollectionName = mongoDbSettings.CarsCollectionName;
+    options.InvoicesCollectionName = mongoDbSettings.InvoicesCollectionName;
+});
 
 // Register services
 builder.Services.AddSingleton<MongoDbContext>();
@@ -50,7 +53,7 @@ using (var scope = app.Services.CreateScope())
 {
     var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
     await initializer.InitializeAsync();
-    
+
     var seeder = scope.ServiceProvider.GetRequiredService<IDataSeederService>();
     await seeder.SeedSampleDataAsync();
 }

@@ -11,6 +11,8 @@ namespace DealershipManagement.Data
 
         public MongoDbContext(IOptions<MongoDbSettings> settings)
         {
+            //var tt = new MongoDbSettings();
+            
             var client = new MongoClient(settings.Value.ConnectionString);
             _database = client.GetDatabase(settings.Value.DatabaseName);
             _carsCollection = _database.GetCollection<Car>(settings.Value.CarsCollectionName);

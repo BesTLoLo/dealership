@@ -1,5 +1,4 @@
 using DealershipManagement.Models;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace DealershipManagement.Data

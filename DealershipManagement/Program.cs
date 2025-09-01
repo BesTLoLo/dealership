@@ -35,12 +35,12 @@ builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDb"));
 
 // Register services
-builder.Services.AddScoped<MongoDbContext>();
+builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
-builder.Services.AddScoped<IFileService, FileService>();
-builder.Services.AddScoped<IDataSeederService, DataSeederService>();
+builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.AddSingleton<IDataSeederService, DataSeederService>();
 builder.Services.AddScoped<DatabaseInitializer>();
 
 var app = builder.Build();

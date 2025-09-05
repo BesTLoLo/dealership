@@ -34,8 +34,7 @@ RUN mkdir -p /app/DataProtection-Keys && \
 RUN chmod 755 /app/wwwroot/invoices
 
 # Expose the port the app runs on
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
 
 # Start the application
 ENTRYPOINT ["dotnet", "DealershipManagement.dll"]

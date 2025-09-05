@@ -1,0 +1,64 @@
+@page "/logout"
+@using DealershipManagement.Services
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+@inject CustomAuthenticationStateProvider AuthStateProvider
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Logout - Dealership Management</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h4><i class="bi bi-box-arrow-right"></i> Logout</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p>Are you sure you want to logout?</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-danger" @onclick="HandleLogout">
+                            <i class="bi bi-box-arrow-right"></i> Yes, Logout
+                        </button>
+                        <button class="btn btn-secondary" @onclick="CancelLogout">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Auto-logout if accessed directly
+        await HandleLogout();
+    }
+
+    private async Task HandleLogout()
+    {
+        try
+        {
+            // Clear authentication cookie
+            await JSRuntime.InvokeVoidAsync("clearAuthCookie");
+            
+            // Notify authentication state change
+            await AuthStateProvider.NotifyUserLogoutAsync();
+            
+            // Redirect to login page
+            Navigation.NavigateTo("/login", true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Logout error: {ex.Message}");
+            Navigation.NavigateTo("/login", true);
+        }
+    }
+
+    private void CancelLogout()
+    {
+        Navigation.NavigateTo("/");
+    }
+}

@@ -5,6 +5,7 @@ A comprehensive Blazor Server application for managing car dealership operations
 ## 🚗 Features
 
 - **Complete Car Lifecycle Management**: Track cars from purchase through maintenance to sale
+- **User Authentication**: Secure login system with username/password authentication
 - **Automatic Financial Calculations**: Built-in tax calculations (10% rate) and final price computations
 - **Comprehensive Maintenance Tracking**: Detailed service logs with invoice file attachments
 - **Advanced Search & Filtering**: Search by VIN, stock number, make, model, year with advanced filters
@@ -214,6 +215,8 @@ The application supports configuration through environment variables for enhance
 - **MONGODB_DATABASE_NAME**: Database name (default: DealershipDB)
 - **MONGODB_CARS_COLLECTION**: Cars collection name (default: Cars)
 - **MONGODB_INVOICES_COLLECTION**: Invoices collection name (default: Invoices)
+- **AUTH_USERNAME**: Username for login authentication
+- **AUTH_PASSWORD**: Password for login authentication
 
 #### Using .env File
 1. Copy `env.example` to `.env`
@@ -412,6 +415,8 @@ This application is ready for deployment on Render.com using Docker. See [DEPLOY
 
 #### Required Environment Variables for Production:
 - `MONGODB_CONNECTION_STRING`: Your MongoDB connection string
+- `AUTH_USERNAME`: Username for authentication
+- `AUTH_PASSWORD`: Password for authentication
 - `ASPNETCORE_ENVIRONMENT`: Production
 - `ASPNETCORE_URLS`: http://+:8080
 

@@ -1,4 +1,6 @@
 ﻿@inject NavigationManager NavigationManager
+@inject CustomAuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JSRuntime
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" id="navbar-toggler">
 
@@ -33,10 +35,60 @@
                 <span class="bi bi-info-circle-nav-menu"></span> About Us
             </a>
         </div>
+        
+        @if (isAuthenticated)
+        {
+            <div class="nav-item flex-column" style="width:100%;">
+                <a class="nav-link @(NavigationManager.Uri.Contains("/logout") ? "active" : "")" href="logout">
+                    <span class="bi bi-box-arrow-right"></span> Logout
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="nav-item flex-column" style="width:100%;">
+                <a class="nav-link @(NavigationManager.Uri.Contains("/login") ? "active" : "")" href="login">
+                    <span class="bi bi-box-arrow-in-right"></span> Login
+                </a>
+            </div>
+        }
     </nav>
 </div>
 
 @code {
-    // No JavaScript toggle needed - CSS handles the collapse/expand
+    private bool isAuthenticated = false;
+    private string? username;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+        username = authState.User.Identity?.Name;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Check for cookie-based authentication after first render
+            if (!isAuthenticated)
+            {
+                try
+                {
+                    var cookieUser = await JSRuntime.InvokeAsync<string>("auth.getAuthCookie");
+                    if (!string.IsNullOrEmpty(cookieUser))
+                    {
+                        isAuthenticated = true;
+                        username = cookieUser;
+                        StateHasChanged(); // Trigger a re-render to update the UI
+                    }
+                }
+                catch (Exception)
+                {
+                    // JavaScript interop failed, continue with server-side authentication only
+                }
+            }
+        }
+    }
 }
 

@@ -29,15 +29,18 @@ services:
       - MONGODB_CARS_COLLECTION=Cars
       - MONGODB_INVOICES_COLLECTION=Invoices
       - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_DataProtection_Keys_Directory=/app/DataProtection-Keys
     depends_on:
       - mongodb
     volumes:
       - ./wwwroot/invoices:/app/wwwroot/invoices
+      - dataprotection_keys:/app/DataProtection-Keys
     networks:
       - dealership-network
 
 volumes:
   mongodb_data:
+  dataprotection_keys:
 
 networks:
   dealership-network:

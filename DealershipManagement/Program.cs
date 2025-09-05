@@ -16,7 +16,7 @@ builder.Services.AddBlazorBootstrap();
 var mongoDbSettings = new MongoDbSettings
 {
     ConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING") ?? 
-                      builder.Configuration.GetConnectionString("MongoDb") ?? 
+                      builder.Configuration["MongoDb:ConnectionString"] ?? 
                       "mongodb://localhost:27017",
     DatabaseName = Environment.GetEnvironmentVariable("MONGODB_DATABASE_NAME") ?? 
                    builder.Configuration["MongoDb:DatabaseName"] ?? 
@@ -43,8 +43,8 @@ builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
 builder.Services.AddSingleton<IFileService, FileService>();
-builder.Services.AddSingleton<IDataSeederService, DataSeederService>();
-builder.Services.AddScoped<DatabaseInitializer>();
+builder.Services.AddScoped<IDataSeederService, DataSeederService>();
+builder.Services.AddSingleton<DatabaseInitializer>();
 
 var app = builder.Build();
 

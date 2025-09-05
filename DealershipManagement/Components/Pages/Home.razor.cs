@@ -10,12 +10,12 @@ namespace DealershipManagement.Components.Pages
 
         protected override void OnInitialized()
         {
-            ToastService.Notify(new ToastMessage
-            {
-                Type = ToastType.Success,
-                Title = "Welcome!",
-                Message = "Welcome to MA Cars Management System. You can now manage your car inventory with ease!"
-            });
+            //ToastService.Notify(new ToastMessage
+            //{
+            //    Type = ToastType.Success,
+            //    Title = "Welcome!",
+            //    Message = "Welcome to MA Cars Management System. You can now manage your car inventory with ease!"
+            //});
         }
     }
 }
